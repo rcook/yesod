@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module Keter
     ( keter
     ) where
@@ -12,9 +13,11 @@ import Control.Monad
 import System.Directory hiding (findFiles)
 import Data.Maybe (mapMaybe)
 import Data.Monoid
+import ExpandEnvVars
 import System.FilePath ((</>))
 import qualified Codec.Archive.Tar as Tar
 import Control.Exception
+import qualified Data.ByteString.Char8 as C
 import qualified Data.ByteString.Lazy as L
 import Codec.Compression.GZip (compress)
 import qualified Data.Foldable as Fold
@@ -32,7 +35,9 @@ keter :: String -- ^ cabal command
       -> IO ()
 keter cabal noBuild noCopyTo buildArgs = do
     ketercfg <- keterConfig
-    mvalue <- decodeFile ketercfg
+    template <- readFile ketercfg
+    content <- expandEnvVars template
+    let mvalue = decode $ C.pack content
     value <-
         case mvalue of
             Nothing -> error "No config/keter.yaml found"

@@ -89,6 +89,7 @@ executable             yesod
                      , warp-tls           >= 3.0.1
                      , async
                      , deepseq
+                     , regex-applicative
 
     ghc-options:       -Wall -threaded -rtsopts
     main-is:           main.hs
@@ -101,6 +102,7 @@ executable             yesod
                        Paths_yesod_bin
                        Options
                        HsFile
+                       ExpandEnvVars
 
 source-repository head
   type:     git
